@@ -1,0 +1,32 @@
+{
+  "name": "core-wrappers",
+  "version": "0.0.1",
+  "description": "ES5 function wrappers & ES2015 decorators",
+  "main": "src/core-wrappers.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/wrapperSpec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akira-cn/core-wrappers.git"
+  },
+  "keywords": [
+    "decorator"
+  ],
+  "author": "akira.cn@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/akira-cn/core-wrappers/issues"
+  },
+  "homepage": "https://github.com/akira-cn/core-wrappers#readme",
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "Mocha": "^2.3.4",
+    "Chai": "^3.4.1"
+  }
+}
