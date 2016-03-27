@@ -1,7 +1,7 @@
 .DS_Store
 node_modules
-coverage
-test-cov
 coverage.lcov
 npm-debug.log
-test-app
+/test-app
+/dist
+/test-cov

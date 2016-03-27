@@ -8,7 +8,10 @@
   },
   "scripts": {
     "test": "babel --presets es2015-loose,stage-1 --plugins transform-runtime,transform-decorators-legacy test/ --out-dir test-app/ && mocha test-app/",
-    "test-cov": "babel --presets es2015-loose,stage-1 --plugins transform-runtime,transform-decorators-legacy test/ --out-dir test-app/ && node_modules/jscover/bin/jscover src test-cov && node_modules/jscover/bin/jscover test-app test-cov && mocha test-cov --reporter=mocha-lcov-reporter > test-cov/coverage.lcov"
+    "test-cov": "babel --presets es2015-loose,stage-1 --plugins transform-runtime,transform-decorators-legacy test/ --out-dir test-app/ && node_modules/jscover/bin/jscover src test-cov && node_modules/jscover/bin/jscover test-app test-cov && mocha test-cov --reporter=mocha-lcov-reporter > test-cov/coverage.lcov",
+    "prepublish": "rm -rf dist && mkdir -p dist && npm run build-dev && npm run build-prod",
+    "build-dev": "browserify --standalone CoreWrappers src/core-wrappers.js > dist/core-wrappers.js",
+    "build-prod": "browserify --standalone CoreWrappers src/core-wrappers.js | uglifyjs -cm > dist/core-wrappers.min.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +30,8 @@
 
   },
   "devDependencies": {
+    "browserify": "^13.0.0",
+    "uglify-js": "^2.6.2",
     "request": "*",
     "mocha": "^2.3.4",
     "mocha-lcov-reporter": "^1.2.0",
