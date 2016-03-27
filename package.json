@@ -7,9 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "build-test": "babel test-src/wrapperSpec.es7.js -o test/wrapperSpec.js && node_modules/jscover/bin/jscover src test-cov && node_modules/jscover/bin/jscover test test-cov",
-    "test": "babel test-src/wrapperSpec.es7.js -o test/wrapperSpec.js & mocha",
-    "test-cov": "node_modules/jscover/bin/jscover src test-cov && node_modules/jscover/bin/jscover test test-cov && mocha test-cov --reporter=mocha-lcov-reporter > test-cov/coverage.lcov"
+    "test": "babel test/wrapperSpec.js -o test/test.js && mocha test/test.js && rm -rf test/test.js",
+    "test-cov": "babel test/wrapperSpec.js -o test/test.js && mv test/wrapperSpec.js test/wrapperSpec.es && node_modules/jscover/bin/jscover src test-cov && node_modules/jscover/bin/jscover test test-cov && mocha test-cov --reporter=mocha-lcov-reporter > test-cov/coverage.lcov && rm -rf test/test.js && mv test/wrapperSpec.es test/wrapperSpec.js"
   },
   "repository": {
     "type": "git",
