@@ -4,3 +4,4 @@ coverage
 test-cov
 coverage.lcov
 npm-debug.log
+test-app
