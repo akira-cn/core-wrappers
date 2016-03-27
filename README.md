@@ -7,12 +7,33 @@
 
 Core-wrappers is a small library exporting basic wrapper functions compatible with [ES7 Decorators](https://github.com/wycats/javascript-decorators). 
 
-## Get It
+## Use it in nodeJS
 
 A version compiled to ES5 in CJS format is published to npm as core-wrappers.
 
 ```bash
 npm install core-wrappers
+```
+
+## Use it in browser
+
+**core-wrappers CDN**
+
+```html
+<script src="https://s5.ssl.qhimg.com/!2a2ec8a7/core-wrappers.min.js"></script>
+```
+
+You can use it with any AMD loader or **standalone**
+
+```js
+function test(){
+	console.log(1);
+}
+
+test = CoreWrappers.once(test);
+
+test();
+test(); //WARN: This function should not be called more than 1 times.
 ```
 
 ## Wrappers
