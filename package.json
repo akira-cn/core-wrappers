@@ -9,7 +9,7 @@
   "scripts": {
     "build-test": "babel test-src/wrapperSpec.es7.js -o test/wrapperSpec.js & node_modules/jscover/bin/jscover test test-cov",
     "test": "babel test-src/wrapperSpec.es7.js -o test/wrapperSpec.js & mocha",
-    "test-cov": "babel test-src/wrapperSpec.es7.js -o test/wrapperSpec.js & node_modules/jscover/bin/jscover test test-cov & mocha test-cov/wrapperSpec.js --reporter=mocha-lcov-reporter > coverage/coverage.lcov"
+    "test-cov": "babel test-src/wrapperSpec.es7.js -o test/wrapperSpec.js & node_modules/jscover/bin/jscover test test-cov & mocha test-cov/wrapperSpec.js --reporter=mocha-lcov-reporter > test-cov/coverage.lcov"
   },
   "repository": {
     "type": "git",
