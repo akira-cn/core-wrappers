@@ -66,7 +66,7 @@ test(); //WARN: This function should not be called more than 1 times.
 
 **allow(times, fn)**
 
-Creates a version of the function that can only be called many time. Repeated calls to the modified function will have no effect, returning the value from the original call. Useful for initialization functions, instead of having to set a boolean flag and then check it later.
+Creates a version of the function that can only be called servaral times. Repeated calls exteeded by max times will have no effect, returning the value of undefined. Useful for initialization functions, instead of having to set a boolean flag and then check it later.
 
 Wrapper:
 
