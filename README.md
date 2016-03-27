@@ -75,7 +75,9 @@ let f = new Foo(), f2 = new Foo();
 expect(times).to.equal(1);
 ```
 
-### @bind(...args, fn)
+### @bind
+
+**bind(...args, fn)**
 
 Forces invocations of this function to always have `this` refer to the class instance, even if the function is passed around or would otherwise lose its `this` context. e.g. `var fn = context.method;` Popular with React components.
 
@@ -135,7 +137,9 @@ let getName = akira.getName;
 console.log(getName()); //akira
 ```
 
-### debounce(wait, immediate, fn)
+### @debounce
+
+**debounce(wait, immediate, fn)**
 
 Creates and returns a new debounced version of the passed function which will postpone its execution until after wait milliseconds have elapsed since the last time it was invoked. Useful for implementing behavior that should only happen after the input has stopped arriving. For example: rendering a preview of a Markdown comment, recalculating a layout after the window has stopped being resized, and so on.
 
@@ -203,7 +207,9 @@ setTimeout(function(){
 }, 150);
 ```
 
-### decorator(wrapper, ...args)
+### @decorator
+
+**decorator(wrapper, ...args)**
 
 Immediately applies the provided wrapper and arguments to the method.
 
@@ -224,7 +230,9 @@ expect(f.bar()).to.equal(1);
 expect(f.bar()).to.equal(undefined);
 ```
 
-### defer(promisify, fn)
+### @defer
+
+**defer(promisify, fn)**
 
 Defers invoking the func until the current call stack has cleared. Any additional arguments are provided to func when it’s invoked.
 
@@ -272,13 +280,17 @@ foo.inc().then(function(ret){
 });
 ```
 
-### delay(wait, promisify, fn)
+### @delay
+
+**delay(wait, promisify, fn)**
 
 Invokes func after wait milliseconds. 
 
 If promisify is true, it returns a promise otherwise it returns the timer id.
 
-### deprecate(message, url, fn)
+### @deprecate
+
+**deprecate(message, url, fn)**
 
 Calls console.warn() with a deprecation message. Provide a custom message to override the default one. You can also provide a url, for further reading.
 
@@ -324,7 +336,9 @@ foo.bar2();
 foo.bar3();
 ```
 
-### methodize(fn)
+### @methodize
+
+**methodize(fn)**
 
 Add the `this context` to the first argument of the function.
 
@@ -343,7 +357,9 @@ var foo = new Foo();
 expect(foo.bar(2)).to.equal(3);
 ```
 
-### multicast(fn)
+### @multicast
+
+**multicast(fn)**
 
 Allow the first argument of the function be an array and invokes function with the elements of the array one by one.
 
@@ -388,7 +404,9 @@ c.append(1,2,3);
 expect(c.items[1]).to.equal(2); //2
 ```
 
-### multiset(fn)
+### @multiset
+
+**multiset(fn)**
 
 Allow setter's first argument to be a json object.
 
@@ -415,7 +433,9 @@ expect(store.b).to.equal(2);
 expect(store.c).to.equal(3);
 ```
 
-### observable(fn)
+### @observable
+
+**observable(fn)**
 
 Let function to be observable so we can trigger `before` and `after` events when the function is invoked. 
 
@@ -436,11 +456,15 @@ add.before = function(args){
 expect(add(1,2)).to.equal(7);
 ```
 
-### once(fn)
+### @once
+
+**once(fn)**
 
 This wrapper is the shortcut of [allow(1, fn)](#allow).
 
-### promisify(fn)
+### @promisify
+
+**promisify(fn)**
 
 Transform a function with callback(err, ...args) to a promise style.
 
@@ -475,19 +499,27 @@ test(10).then(function(res){
 });
 ```
 
-### repeat(times, wait, fn)
+### @repeat
+
+**repeat(times, wait, fn)**
 
 Call function many times.
 
-### spread(fn)
+### @spread
+
+**spread(fn)**
 
 See [multicast](#multicast)
 
-### suppressWarnings(fn)
+### @suppressWarnings
+
+**suppressWarnings(fn)**
 
 See [deprecate](#deprecate)
 
-### throttle(wait, options, fn)
+### @throttle
+
+**throttle(wait, options, fn)**
 
 Creates and returns a new, throttled version of the passed function, that, when invoked repeatedly, will only actually call the original function at most once per every wait milliseconds. Useful for rate-limiting events that occur faster than you can keep up with.
 
