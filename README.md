@@ -434,7 +434,7 @@ expect(c.items[1]).to.equal(2); //2
 
 **multiset(fn)**
 
-Allow setter's first argument to be a json object.
+Allow setter's first argument to be a json object to set many properties at once.
 
 ```js
 const w = require('../src/core-wrappers');
@@ -486,13 +486,13 @@ expect(add(1,2)).to.equal(7);
 
 **once(fn)**
 
-This wrapper is the shortcut of [allow(1, fn)](#allow).
+This wrapper is a shortcut of [allow(1, fn)](#allow).
 
 ### @promisify
 
 **promisify(fn)**
 
-Transform a function with callback(err, ...args) to a promise style.
+Transform an asynchronous function with a callback(err, ...args) parameter to a function returns a promise.
 
 Wrapper:
 
@@ -575,6 +575,6 @@ setTimeout(function(){
 }, 550);
 ```
 
-## LISENSE
+## LICENSE
 
-[MIT](LISENSE)
+[MIT](LICENSE)
