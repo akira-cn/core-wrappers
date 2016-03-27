@@ -1,5 +1,10 @@
 # Core-wrappers
 
+[![npm status](https://img.shields.io/npm/v/core-wrappers.svg)](https://www.npmjs.org/package/core-wrappers)
+[![build status](https://api.travis-ci.org/akira-cn/core-wrappers.svg?branch=master)](https://travis-ci.org/akira-cn/core-wrappers) 
+[![dependency status](https://david-dm.org/akira-cn/core-wrappers.svg)](https://david-dm.org/akira-cn/core-wrappers) 
+[![coverage status](https://img.shields.io/coveralls/akira-cn/core-wrappers.svg)](https://img.shields.io/coveralls/akira-cn/core-wrappers)
+
 Core-wrappers is a small library exporting basic wrapper functions compatible with [ES7 Decorators](https://github.com/wycats/javascript-decorators). 
 
 ## Get It
