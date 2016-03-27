@@ -186,7 +186,7 @@ console.log(i); //1
 
 Decorator:
 
-```
+```js
 const w = require('../src/core-wrappers');
 const debounce = w.toDecorator(w.debounce);
 
@@ -490,17 +490,25 @@ readFile('/path/to/file').then(function(data){
 Decorator:
 
 ```js
-var w = require('../src/core-wrappers');
+const w = require('../src/core-wrappers');
+let promisify = w.toDecorator(w.promisify);
 
-function test(x, callback){
-	setTimeout(function(){
-	  callback(null, x);
-	}, 100);
+class Site{
+  constructor(url){
+    this.url = url;
+  }
+  @promisify
+  getData(callback){
+    let request = require('request');
+    request(this.url, callback);
+  }
 }
 
-test = w.promisify(test);
-test(10).then(function(res){
-	console.log(res[0]); //10
+var site = new Site('https://registry.npmjs.org/core-wrappers');
+site.getData().then(function(res){
+  var data = JSON.parse(res[1]);
+  expect(data.name).to.equal('core-wrappers');
+  done();
 });
 ```
 

@@ -27,6 +27,7 @@
 
   },
   "devDependencies": {
+    "request": "*",
     "mocha": "^2.3.4",
     "mocha-lcov-reporter": "^1.2.0",
     "jscover": "^1.0.0",

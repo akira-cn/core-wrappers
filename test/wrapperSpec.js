@@ -390,5 +390,27 @@ describe('Core Wrappers', function(){
       expect(times).to.equal(1);
     });
 
+    it('promisify', function(done){
+      let promisify = w.toDecorator(w.promisify);
+
+      class Site{
+        constructor(url){
+          this.url = url;
+        }
+        @promisify
+        getData(callback){
+          let request = require('request');
+          request(this.url, callback);
+        }
+      }
+
+      var site = new Site('https://registry.npmjs.org/core-wrappers');
+      site.getData().then(function(res){
+        var data = JSON.parse(res[1]);
+        expect(data.name).to.equal('core-wrappers');
+        done();
+      });
+    });
+
   });
 });
