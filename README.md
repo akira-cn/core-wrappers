@@ -543,4 +543,4 @@ setTimeout(function(){
 
 ## LISENSE
 
-MIT
+[MIT](LISENSE)
