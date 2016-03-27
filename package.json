@@ -7,7 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test/wrapperSpec.js"
+    "build-test": "babel test-src/wrapperSpec.es7.js -o test/wrapperSpec.js & node_modules/jscover/bin/jscover test test-cov",
+    "test": "babel test-src/wrapperSpec.es7.js -o test/wrapperSpec.js & mocha",
+    "test-cov": "babel test-src/wrapperSpec.es7.js -o test/wrapperSpec.js & node_modules/jscover/bin/jscover test test-cov & mocha test-cov/wrapperSpec.js --reporter=mocha-lcov-reporter > coverage/coverage.lcov"
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "mocha": "^2.3.4",
     "mocha-lcov-reporter": "^1.2.0",
+    "jscover": "1.0.0",
     "chai": "^3.4.1",
     "babel-runtime": "6.x.x"
   }
