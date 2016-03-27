@@ -148,9 +148,12 @@ function multicast(fn){
   return function(list) {
     var rest = slice.call(arguments, 1);
     if(Array.isArray(list)){
-      return list.map(item => fn.apply(this, [item].concat(rest)));
+      var context = this;
+      return list.map(function(item){
+        return fn.apply(context, [item].concat(rest))
+      });
     }else{
-      let item = list;
+      var item = list;
       return fn.apply(this, [item].concat(rest));
     }
   }
@@ -306,9 +309,9 @@ function isDescriptor(desc){
     return false;
   }
 
-  const keys = ['value', 'initializer', 'get', 'set'];
+  var keys = ['value', 'initializer', 'get', 'set'];
 
-  for (let i = 0, l = keys.length; i < l; i++) {
+  for (var i = 0, l = keys.length; i < l; i++) {
     if (desc.hasOwnProperty(keys[i])) {
       return true;
     }

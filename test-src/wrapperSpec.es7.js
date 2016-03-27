@@ -1,6 +1,11 @@
 var expect = require('chai').expect;
 
-var w = require('../src/core-wrappers');
+var w;
+try{
+  w = require('../test-cov/core-wrappers');
+}catch(ex){
+  w = require('../src/core-wrappers');
+}
 
 describe('Core Wrappers', function(){
   describe('wrappers', function(){
@@ -220,7 +225,6 @@ describe('Core Wrappers', function(){
     });
 
     it('debounce', function(done){
-      const w = require('../src/core-wrappers');
       const debounce = w.toDecorator(w.debounce);
 
       class Foo{
@@ -247,7 +251,6 @@ describe('Core Wrappers', function(){
     });
 
     it('defer', function(done){
-      const w = require('../src/core-wrappers');
       const defer = w.toDecorator(w.defer);
 
       class Foo{

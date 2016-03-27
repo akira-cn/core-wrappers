@@ -45,7 +45,12 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
 
 var expect = require('chai').expect;
 
-var w = require('../src/core-wrappers');
+var w;
+try {
+  w = require('../test-cov/core-wrappers');
+} catch (ex) {
+  w = require('../src/core-wrappers');
+}
 
 describe('Core Wrappers', function () {
   describe('wrappers', function () {
@@ -288,7 +293,6 @@ describe('Core Wrappers', function () {
     it('debounce', function (done) {
       var _dec2, _desc3, _value3, _class3;
 
-      var w = require('../src/core-wrappers');
       var debounce = w.toDecorator(w.debounce);
 
       var Foo = (_dec2 = debounce(100, true), (_class3 = function () {
@@ -324,7 +328,6 @@ describe('Core Wrappers', function () {
     it('defer', function (done) {
       var _dec3, _desc4, _value4, _class4;
 
-      var w = require('../src/core-wrappers');
       var defer = w.toDecorator(w.defer);
 
       var Foo = (_dec3 = defer(true), (_class4 = function () {
