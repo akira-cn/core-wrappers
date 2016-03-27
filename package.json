@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test/wrapperSpec.js"
+    "test": "mocha test/wrapperSpec.js",
+    "coveralls": "mocha tests/wrapperSpec.js -R mocha-lcov-reporter -r jscoverage | coveralls"
   },
   "repository": {
     "type": "git",
