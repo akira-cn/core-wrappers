@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "mocha": "^2.3.4",
+    "mocha-lcov-reporter": "^1.2.0",
     "chai": "^3.4.1",
     "babel-runtime": "6.x.x"
   }
