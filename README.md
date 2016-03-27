@@ -15,7 +15,7 @@ A version compiled to ES5 in CJS format is published to npm as core-wrappers.
 npm install core-wrappers
 ```
 
-## Use it in browser
+## Use it on browser
 
 **core-wrappers CDN**
 
