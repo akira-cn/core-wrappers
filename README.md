@@ -60,7 +60,7 @@ test(); //WARN: This function should not be called more than 1 times.
 * [@decorator](#decorator)
 * [@toDecorator](#toDecorator)
 
-## Docs
+## API Docs
 
 ### @allow
 
