@@ -20,7 +20,7 @@ npm install core-wrappers
 **core-wrappers CDN**
 
 ```html
-<script src="https://s5.ssl.qhimg.com/!2a2ec8a7/core-wrappers.min.js"></script>
+<script src="https://s5.ssl.qhimg.com/!3ed86a5c/core-wrappers.min.js"></script>
 ```
 
 You can use it with any AMD loader or **standalone**
@@ -36,7 +36,76 @@ test();
 test(); //WARN: This function should not be called more than 1 times.
 ```
 
-## Wrappers
+## The wrapper and the decorator
+
+A wrapper is a function that returns another function.
+
+Wrapper:
+
+```js
+function myWrapperWithoutArguments(fn){
+	return function(){
+		//do sth...
+		return fn.apply(this, arguments);
+	}
+}
+
+function myWrapperWithArguments(..args){
+	var fn = args[args.length - 1];
+	return function(){
+		//do sth...
+		return fn.apply(this, arguments);
+	}
+}
+```
+
+A decorator is a function like [ES7 Decorators](https://github.com/wycats/javascript-decorators)
+
+```js
+function myDecoratorWithoutArguments(target, key, descriptor){
+	//do sth...
+	return descriptor;
+}
+
+function myDecoratorWithArguments(...args){
+	return function(target, key, descriptor){
+		//do sth...
+		return descriptor;
+	}
+}
+```
+
+This library can transform a wrapper to a decorator.
+
+Wrapper in ES5:
+
+```
+var w = require('core-wrappers');
+
+function Foo(){
+
+}
+
+Foo.prototype.bar = w.debounce(100, function(){
+	//do sth.
+});
+```
+
+Decorator in ES7:
+
+```
+const w = require('core-wrappers');
+const debounce = w.getDecorator('debounce');
+
+class Foo{
+	@debounce(100)
+	bar(){
+		//do sth.
+	}
+}
+```
+
+## API Doc
 
 ##### For both Wrappers and Decorates
 
@@ -58,9 +127,9 @@ test(); //WARN: This function should not be called more than 1 times.
 ##### For Decorates only
 
 * [@decorator](#decorator)
-* [@toDecorator](#toDecorator)
+* [@getDecorator](#getDecorator)
 
-## API Docs
+-----
 
 ### @allow
 
@@ -71,7 +140,7 @@ Creates a version of the function that can only be called servaral times. Repeat
 Wrapper:
 
 ```js
-var allow = require('../src/core-wrappers').allow;
+var allow = require('core-wrappers').allow;
 
 var initialize = allow(1, createApplication);
 initialize();
@@ -82,8 +151,8 @@ initialize();
 Decorator:
 
 ```js
-const w = require('../src/core-wrappers');
-const allow = w.toDecorator(w.allow);
+const w = require('core-wrappers');
+const allow = w.getDecorator('allow');
 
 let times = 0;
 
@@ -110,7 +179,7 @@ Forces invocations of this function to always have `this` refer to the class ins
 Wrapper:
 
 ```js
-var bind = require('../src/core-wrappers').bind;
+var bind = require('core-wrappers').bind;
 
 function Person(name){
 	this.name = name;
@@ -128,24 +197,9 @@ console.log(getName()); //akira
 Decorator:
 
 ```js
-const w = require('../src/core-wrappers');
+const w = require('core-wrappers');
 
-const bind = w.toDecorator(function(fn){
-  let {target, key, descriptor} = this;
-
-  delete descriptor.value;
-  delete descriptor.writable;
-
-  descriptor.set = function(value){
-    target[key] = value;
-  }
-
-  descriptor.get = function(){
-    return fn.bind(this);
-  }
-
-  return descriptor;
-});
+const bind = w.getDecorator('bind');
 
 class Person {
   constructor(name){
@@ -176,7 +230,7 @@ Pass true for the immediate argument to cause debounce to trigger the function o
 Wrapper:
 
 ```js
-var w = require('../src/core-wrappers');
+var w = require('core-wrappers');
 
 var i = 0;
 function inc(){
@@ -208,8 +262,8 @@ console.log(i); //1
 Decorator:
 
 ```js
-const w = require('../src/core-wrappers');
-const debounce = w.toDecorator(w.debounce);
+const w = require('core-wrappers');
+const debounce = w.getDecorator('debounce');
 
 class Foo{
   constructor(i){
@@ -237,11 +291,11 @@ setTimeout(function(){
 
 **decorator(wrapper, ...args)**
 
-Immediately applies the provided wrapper and arguments to the method.
+The default decorator. Immediately applies the provided wrapper and arguments to the method.
 
 ```js
-const w = require('../src/core-wrappers');
-const decorator = w.decorator;
+const w = require('core-wrappers');
+const decorator = w.getDecorator();
 
 class Foo{
   @decorator(w.allow, 2)
@@ -267,7 +321,7 @@ If promisify is true, it returns a promise otherwise it returns the timer id.
 Wrapper:
 
 ```js
-var w = require('../src/core-wrappers');
+var w = require('core-wrappers');
 
 var i = 0;
 function inc(){
@@ -285,8 +339,8 @@ process.nextTick(function(ret){
 Decorator:
 
 ```js
-const w = require('../src/core-wrappers');
-const defer = w.toDecorator(w.defer);
+const w = require('core-wrappers');
+const defer = w.getDecorator('defer');
 
 class Foo{
   constructor(i){
@@ -321,26 +375,11 @@ If promisify is true, it returns a promise otherwise it returns the timer id.
 Calls console.warn() with a deprecation message. Provide a custom message to override the default one. You can also provide a url, for further reading.
 
 ```js
-const w = require('../src/core-wrappers');
+const w = require('core-wrappers');
 
-const deprecate = w.toDecorator(function(msg, url, fn){
-  if(typeof msg === 'function'){
-    fn = msg;
-    msg = 'This function will be removed in future versions.';
-    url = null;
-  }
-  if(typeof url === 'function'){
-    fn = url;
-    url = null;
-  }
+const deprecate = w.getDecorator('deprecate');
 
-  let {target, key, descriptor} = this;
-  let methodSignature = `${target.constructor.name}#${key}`;
-
-  return w.deprecate(`DEPRECATION ${methodSignature}: ${msg}`, url, fn);
-});
-
-const suppressWarnings = w.toDecorator(w.suppressWarnings);
+const suppressWarnings = w.getDecorator('suppressWarnings');
 
 class Foo{
   @deprecate
@@ -369,7 +408,7 @@ foo.bar3();
 Add the `this context` to the first argument of the function.
 
 ```js
-let methodize = w.toDecorator(w.methodize);
+let methodize = w.getDecorator('methodize');
 
 class Foo{
   x = 1;
@@ -392,7 +431,7 @@ Allow the first argument of the function be an array and invokes function with t
 Wrapper:
 
 ```js
-var w = require('../src/core-wrappers');
+var w = require('core-wrappers');
 
 function setColor(el, color){
     return el.style.color = color;
@@ -408,9 +447,9 @@ setColorMany(Array.from(els), "red");
 Decorator:
 
 ```js
-const w = require('../src/core-wrappers');
-let multicast = w.toDecorator(w.multicast);
-let spread = w.toDecorator(w.spread);
+const w = require('core-wrappers');
+let multicast = w.getDecorator('multicast');
+let spread = w.getDecorator('spread');
 
 class Collection {
   constructor(){
@@ -437,8 +476,8 @@ expect(c.items[1]).to.equal(2); //2
 Allow setter's first argument to be a json object to set many properties at once.
 
 ```js
-const w = require('../src/core-wrappers');
-let multiset = w.toDecorator(w.multiset);
+const w = require('core-wrappers');
+let multiset = w.getDecorator('multiset');
 
 class Store{
   constructor(){
@@ -466,7 +505,7 @@ expect(store.c).to.equal(3);
 Let function to be observable so we can trigger `before` and `after` events when the function is invoked. 
 
 ```js
-var w = require('../src/core-wrappers');
+var w = require('core-wrappers');
 
 function add(x, y){
   return x + y;
@@ -497,7 +536,7 @@ Transform an asynchronous function with a callback(err, ...args) parameter to a 
 Wrapper:
 
 ```js
-var w = require('../src/core-wrappers');
+var w = require('core-wrappers');
 
 var fs = require('fs');
 
@@ -511,8 +550,8 @@ readFile('/path/to/file').then(function(data){
 Decorator:
 
 ```js
-const w = require('../src/core-wrappers');
-let promisify = w.toDecorator(w.promisify);
+const w = require('core-wrappers');
+let promisify = w.getDecorator('promisify');
 
 class Site{
   constructor(url){
@@ -561,7 +600,7 @@ By default, throttle will execute the function as soon as you call it for the fi
 {trailing: false}.
 
 ```js
-var w = require('../src/core-wrappers');
+var w = require('core-wrappers');
 
 var i = 0;
 function inc(){
@@ -574,6 +613,14 @@ setTimeout(function(){
   console.log(i); //1
 }, 550);
 ```
+
+### getDecorator
+
+**getDecorator(nameOrWrapper)**
+
+Transform a wrapper function to a decorator function. If you pass a string as parameter, it will find a build-in wrapper to transform. 
+
+A **wrapper** is a function that returns other function. A **decorator** is a function like [ES7 Decorators](https://github.com/wycats/javascript-decorators).
 
 ## LICENSE
 

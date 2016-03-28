@@ -205,12 +205,19 @@ function promisify(fn){
         if(!err){
           resolve(args);
         }else{
-          reject(arr);
+          reject(err);
         }
       });
 
       fn.apply(context, args);
     });
+  }
+}
+
+function reduce(fn){
+  return function(){
+    var args = slice.call(arguments);
+    return args.reduce(fn);
   }
 }
 
@@ -354,9 +361,63 @@ function toDecorator(wrapper){
       }
     }
   }
+};
+
+var decoratorWrapper = {
+  bind: function(fn){
+    var target = this.target, key = this.key, 
+        descriptor = this.descriptor;
+
+    delete descriptor.value;
+    delete descriptor.writable;
+
+    descriptor.set = function(value){
+      target[key] = value;
+    }
+
+    descriptor.get = function(){
+      return bind(this, fn);
+    }
+
+    return descriptor;
+  },
+
+  deprecate: function(msg, url, fn){
+    if(typeof msg === 'function'){
+      fn = msg;
+      msg = 'This function will be removed in future versions.';
+      url = null;
+    }
+    if(typeof url === 'function'){
+      fn = url;
+      url = null;
+    }
+
+    var target = this.target, key = this.key, 
+        descriptor = this.descriptor;
+
+    var methodSignature = target.constructor.name + '#' + key;
+
+    return deprecate('DEPRECATION ' + methodSignature + ':' + msg, url, fn);    
+  }
 }
 
-module.exports = {
+function getDecorator(fn){
+  if(!fn || fn === 'decorator'){
+    return decorator;
+  }else if(typeof fn === 'string'){
+    return toDecorator(decoratorWrapper[fn] || wrapper[fn]);
+  }else{
+    for(var i in wrapper){
+      if(wrapper[i] === fn){
+        return toDecorator(decoratorWrapper[i] || wrapper[i]);
+      }
+    }
+    return toDecorator(fn);
+  }
+}
+
+var wrapper = module.exports = {
   allow: allow,
   bind: bind,
   debounce: debounce,
@@ -370,9 +431,11 @@ module.exports = {
   observable: observable,
   once: once,
   promisify: promisify,
+  reduce: reduce,
   repeat: repeat,
   spread: spread,
   suppressWarnings: suppressWarnings,
   throttle: throttle,
-  toDecorator: toDecorator
+  //toDecorator: toDecorator,
+  getDecorator: getDecorator
 }

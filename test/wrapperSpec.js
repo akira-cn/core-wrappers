@@ -1,3 +1,5 @@
+'use strict'
+
 var expect = require('chai').expect;
 
 var w;
@@ -99,6 +101,16 @@ describe('Core Wrappers', function(){
       expect(i).to.equal(5);
     });
 
+    it('reduce', function(){
+      function add(x, y){
+        return x + y;
+      }
+
+      add = w.reduce(add);
+
+      expect(add(1,2,3,4)).to.equal(10);
+    });
+
     it('throttle', function(done){
       var i = 0;
       function inc(){
@@ -175,12 +187,10 @@ describe('Core Wrappers', function(){
   describe('decorators', function(){
 
     it('allow', function(){
-      //var allow = w.toDecorator(w.allow);
-      var decorator = w.decorator;
+      var allow = w.getDecorator('allow');
 
       class Foo{
-        //@allow(2)
-        @decorator(w.allow, 2)
+        @allow(2)
         bar(){
           return 1;
         }
@@ -192,23 +202,54 @@ describe('Core Wrappers', function(){
       expect(f.bar()).to.equal(undefined);
     });
 
+    it('decorator', function(){
+      var decorator = w.getDecorator();
+
+      class Foo{
+        @decorator(w.allow, 2)
+        bar(){
+          return 1;
+        }
+      }
+
+      var f = new Foo();
+      expect(f.bar()).to.equal(1);
+      expect(f.bar()).to.equal(1);
+      expect(f.bar()).to.equal(undefined);
+
+      function twice(fn){
+        return function(){
+          return [fn.apply(this, arguments),
+            fn.apply(this, arguments)];
+        }
+      }
+
+      let doublecall = w.getDecorator(twice);
+
+      class Foo2{
+        constructor(){
+          this.x = 0;
+          this.y = 0;
+        }
+        @decorator(twice)
+        bar(){
+          this.x++;
+        }
+        @doublecall
+        bar2(){
+          this.y += 2;
+        }
+      }
+
+      var f2 = new Foo2();
+      f2.bar();
+      f2.bar2();
+      expect(f2.x).to.equal(2);
+      expect(f2.y).to.equal(4);
+    });
+
     it('bind', function(){
-      var bind = w.toDecorator(function(fn){
-        let {target, key, descriptor} = this;
-
-        delete descriptor.value;
-        delete descriptor.writable;
-
-        descriptor.set = function(value){
-          target[key] = value;
-        }
-
-        descriptor.get = function(){
-          return fn.bind(this);
-        }
-
-        return descriptor;
-      });
+      var bind = w.getDecorator('bind');
 
       class Foo{
         constructor(){
@@ -225,7 +266,7 @@ describe('Core Wrappers', function(){
     });
 
     it('debounce', function(done){
-      const debounce = w.toDecorator(w.debounce);
+      const debounce = w.getDecorator('debounce');
 
       class Foo{
         constructor(i){
@@ -251,7 +292,7 @@ describe('Core Wrappers', function(){
     });
 
     it('defer', function(done){
-      const defer = w.toDecorator(w.defer);
+      const defer = w.getDecorator('defer');
 
       class Foo{
         constructor(i){
@@ -273,24 +314,9 @@ describe('Core Wrappers', function(){
     });
 
     it('deprecate', function(){
-      var deprecate = w.toDecorator(function(msg, url, fn){
-        if(typeof msg === 'function'){
-          fn = msg;
-          msg = 'This function will be removed in future versions.';
-          url = null;
-        }
-        if(typeof url === 'function'){
-          fn = url;
-          url = null;
-        }
+      var deprecate = w.getDecorator('deprecate');
 
-        let {target, key, descriptor} = this;
-        let methodSignature = `${target.constructor.name}#${key}`;
-
-        return w.deprecate(`DEPRECATION ${methodSignature}: ${msg}`, url, fn);
-      });
-
-      var suppressWarnings = w.toDecorator(w.suppressWarnings);
+      var suppressWarnings = w.getDecorator('suppressWarnings');
 
       class Foo{
         @deprecate
@@ -313,7 +339,7 @@ describe('Core Wrappers', function(){
     });
 
     it('methodize', function(){
-      let methodize = w.toDecorator(w.methodize);
+      let methodize = w.getDecorator('methodize');
 
       class Foo{
         x = 1;
@@ -328,8 +354,8 @@ describe('Core Wrappers', function(){
     });
 
     it('multicast', function(){
-      let multicast = w.toDecorator(w.multicast);
-      let spread = w.toDecorator(w.spread);
+      let multicast = w.getDecorator('multicast');
+      let spread = w.getDecorator('spread');
 
       class Collection {
         constructor(){
@@ -350,7 +376,7 @@ describe('Core Wrappers', function(){
     });
 
     if('multiset', function(){
-      let multiset = w.toDecorator(w.multiset);
+      let multiset = w.getDecorator('multiset');
 
       class Store{
         constructor(){
@@ -372,7 +398,7 @@ describe('Core Wrappers', function(){
     });
 
     it('once', function(){
-      const once = w.toDecorator(w.once);
+      const once = w.getDecorator('once');
 
       let times = 0;
 
@@ -390,8 +416,22 @@ describe('Core Wrappers', function(){
       expect(times).to.equal(1);
     });
 
+    it('reduce', function(){
+      const reduce = w.getDecorator('reduce');
+
+      class Foo{
+        @reduce
+        multiply(x, y){
+          return x * y;
+        }
+      }
+
+      var foo = new Foo();
+      expect(foo.multiply(1,2,3,4)).to.equal(24);
+    });
+
     it('promisify', function(done){
-      let promisify = w.toDecorator(w.promisify);
+      let promisify = w.getDecorator('promisify');
 
       class Site{
         constructor(url){
@@ -400,7 +440,7 @@ describe('Core Wrappers', function(){
         @promisify
         getData(callback){
           let request = require('request');
-          request(this.url, callback);
+          request.get(this.url, {timeout: 1500}, callback);
         }
       }
 
@@ -408,6 +448,9 @@ describe('Core Wrappers', function(){
       site.getData().then(function(res){
         var data = JSON.parse(res[1]);
         expect(data.name).to.equal('core-wrappers');
+        done();
+      }).catch(function(err){
+        console.log(err)
         done();
       });
     });
