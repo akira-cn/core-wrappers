@@ -1,11 +1,17 @@
 {
   "name": "core-wrappers",
-  "version": "1.1.0",
-  "description": "ES5 function wrappers & ES2015 decorators",
+  "version": "1.1.1",
+  "description": "ES5 function wrappers and ES7/ES2016 decorators.Works great with React/Angular/more!",
   "main": "src/core-wrappers.js",
   "directories": {
     "test": "test"
   },
+  "files": [
+    "src",
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "babel --presets es2015-loose,stage-1 --plugins transform-runtime,transform-decorators-legacy test/ --out-dir test-app/ && mocha test-app/",
     "test-cov": "babel --presets es2015-loose,stage-1 --plugins transform-runtime,transform-decorators-legacy test/ --out-dir test-app/ && node_modules/jscover/bin/jscover src test-cov && node_modules/jscover/bin/jscover test-app test-cov && mocha test-cov --reporter=mocha-lcov-reporter > test-cov/coverage.lcov",
@@ -18,7 +24,28 @@
     "url": "git+https://github.com/akira-cn/core-wrappers.git"
   },
   "keywords": [
-    "decorator"
+    "es6",
+    "es7",
+    "es2015",
+    "es2016",
+    "node",
+    "babel",
+    "functional",
+    "wrappers",
+    "defer",
+    "bind",
+    "observer",
+    "promise",
+    "debounce",
+    "throttle",
+    "decorators",
+    "deprecated",
+    "annotations",
+    "autobind",
+    "react",
+    "angular",
+    "underscore",
+    "lodash"
   ],
   "author": "akira.cn@gmail.com",
   "license": "MIT",
