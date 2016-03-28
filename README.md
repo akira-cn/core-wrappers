@@ -79,7 +79,7 @@ This library can transform a wrapper to a decorator.
 
 Wrapper in ES5:
 
-```
+```js
 var w = require('core-wrappers');
 
 function Foo(){
@@ -93,7 +93,7 @@ Foo.prototype.bar = w.debounce(100, function(){
 
 Decorator in ES7:
 
-```
+```js
 const w = require('core-wrappers');
 const debounce = w.getDecorator('debounce');
 
