@@ -91,6 +91,36 @@ describe('Core Wrappers', function(){
       expect(foo.bar(2)).to.equal(3);
     });
 
+    it('enumerable', function(){
+      var obj = {};
+
+      w.enumerable(obj, 'add', false, function(x, y){
+        return x + y;
+      });
+
+      expect(obj.add(1, 2)).to.equal(3);
+
+      expect(Object.keys(obj).indexOf('add')).to.equal(-1);     
+    });
+
+    it('readonly', function(){
+      var obj = {};
+
+      w.readonly(obj, 'add', function(x, y){
+        return x + y;
+      });
+
+      expect(obj.add(1, 2)).to.equal(3);
+
+      expect(function(){
+        obj.add = 11;
+      }).to.throw(Error);
+
+      expect(function(){
+        delete obj.add;
+      }).to.throw(Error);
+    });
+
     it('repeat', function(){
       var i = 0;
       function inc(){
@@ -395,6 +425,38 @@ describe('Core Wrappers', function(){
       expect(store.a).to.equal(1);
       expect(store.b).to.equal(2);
       expect(store.c).to.equal(3);
+    });
+
+    it('enumerable', function(){
+      const enumerable = w.getDecorator('enumerable');
+
+      class Foo{
+        //Note: class methods are nonenumerable 
+        //so this is only useful for instance properties.
+        @enumerable(false)
+        bar = 1
+      }
+
+      var foo = new Foo();
+      expect(foo.bar).to.equal(1);
+      expect(Object.keys(foo).indexOf('bar')).to.equal(-1);
+    });
+
+    it('readonly', function(){
+      const readonly = w.getDecorator('readonly');
+
+      class Foo{
+        @readonly
+        bar(){
+          return 1;
+        }
+      }
+
+      var foo = new Foo();
+      expect(foo.bar()).to.equal(1);
+      expect(()=>foo.bar=11).to.throw(Error);
+      delete foo.bar;
+      expect(foo.bar()).to.equal(1);
     });
 
     it('once', function(){

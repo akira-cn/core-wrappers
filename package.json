@@ -1,6 +1,6 @@
 {
   "name": "core-wrappers",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "ES5 function wrappers & ES2015 decorators",
   "main": "src/core-wrappers.js",
   "directories": {

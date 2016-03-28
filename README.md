@@ -20,7 +20,7 @@ npm install core-wrappers
 **core-wrappers CDN**
 
 ```html
-<script src="https://s5.ssl.qhimg.com/!3ed86a5c/core-wrappers.min.js"></script>
+<script src="https://s5.ssl.qhimg.com/!3009685d/core-wrappers.min.js"></script>
 ```
 
 You can use it with any AMD loader or **standalone**
@@ -116,9 +116,11 @@ class Foo{
 * [@deprecate](#deprecate)
 * [@methodize](#methodize)
 * [@multicast](#multicast)
+* [@nonenumerable](#nonenumerable)
 * [@observable](#observable)
 * [@once](#once)
 * [@promisify](#promisify)
+* [@readonly](#readonly)
 * [@repeat](#repeat)
 * [@spread](#spread)
 * [@supressWarnings](#supressWarnings)
@@ -401,6 +403,47 @@ foo.bar2();
 foo.bar3();
 ```
 
+### @enumerable
+
+**enumerable(target, key, isEnumerable, fn)**
+
+Marks a property as being enumerable. Note that class methods are always nonenumerable, so this is only useful for instance properties.
+
+Wrapper:
+
+```js
+var w = require('core-wrappers');
+
+var obj = {};
+
+w.enumerable(obj, 'add', false, function(x, y){
+  return x + y;
+});
+
+expect(obj.add(1, 2)).to.equal(3);
+
+expect(Object.keys(obj).indexOf('add')).to.equal(-1); 
+```
+
+Decorator:
+
+```js
+const w = require('core-wrappers');
+
+const enumerable = w.getDecorator('enumerable');
+
+class Foo{
+  //Note: class methods are nonenumerable 
+  //so this is only useful for instance properties.
+  @enumerable(false)
+  bar = 1
+}
+
+var foo = new Foo();
+expect(foo.bar).to.equal(1);
+expect(Object.keys(foo).indexOf('bar')).to.equal(-1);
+```
+
 ### @methodize
 
 **methodize(fn)**
@@ -408,7 +451,9 @@ foo.bar3();
 Add the `this context` to the first argument of the function.
 
 ```js
-let methodize = w.getDecorator('methodize');
+const w = require('core-wrappers');
+
+const methodize = w.getDecorator('methodize');
 
 class Foo{
   x = 1;
@@ -496,6 +541,53 @@ store.setItem({b:2, c:3});
 expect(store.a).to.equal(1);
 expect(store.b).to.equal(2);
 expect(store.c).to.equal(3);
+```
+
+### @readonly
+
+**readonly(obj, prop, fn)**
+
+Marks a property or method readonly so that it cannot be reset or deleted.
+
+Wrapper:
+
+```js
+var obj = {};
+
+w.readonly(obj, 'add', function(x, y){
+  return x + y;
+});
+
+expect(obj.add(1, 2)).to.equal(3);
+
+expect(function(){
+  obj.add = 11;
+}).to.throw(Error);
+
+expect(function(){
+  delete obj.add;
+}).to.throw(Error);
+```
+
+Decorator:
+
+```js
+const w = require('core-wrappers');
+
+const readonly = w.getDecorator('readonly');
+
+class Foo{
+  @readonly
+  bar(){
+    return 1;
+  }
+}
+
+var foo = new Foo();
+expect(foo.bar()).to.equal(1);
+expect(()=>foo.bar=11).to.throw(Error);
+delete foo.bar;
+expect(foo.bar()).to.equal(1);
 ```
 
 ### @observable

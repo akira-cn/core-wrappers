@@ -137,6 +137,15 @@ function deprecate(msg, url, fn){
   }
 }
 
+function enumerable(target, key, isEnumerable, fn){
+  Object.defineProperty(target, key, {
+    value: fn,
+    enumerable: !(isEnumerable === false)
+  });
+
+  return target[key];
+}
+
 function methodize(fn){
   return function(){
     var args = slice.call(arguments);
@@ -212,6 +221,16 @@ function promisify(fn){
       fn.apply(context, args);
     });
   }
+}
+
+function readonly(target, key, fn){
+  Object.defineProperty(target, key, {
+    value: fn,
+    writable: false,
+    configurable: false
+  });
+
+  return target[key];
 }
 
 function reduce(fn){
@@ -399,6 +418,25 @@ var decoratorWrapper = {
     var methodSignature = target.constructor.name + '#' + key;
 
     return deprecate('DEPRECATION ' + methodSignature + ':' + msg, url, fn);    
+  },
+
+  enumerable: function(isEnumerable){
+    var target = this.target, key = this.key, 
+        descriptor = this.descriptor;
+
+    descriptor.enumerable = !(isEnumerable === false);
+
+    return descriptor;
+  },
+
+  readonly: function(){
+    var target = this.target, key = this.key, 
+        descriptor = this.descriptor;
+
+    descriptor.writable = false;
+    descriptor.configurable = false;
+
+    return descriptor;
   }
 }
 
@@ -425,12 +463,14 @@ var wrapper = module.exports = {
   defer: defer,
   delay: delay,
   deprecate: deprecate,
+  enumerable: enumerable,
   methodize: methodize,
   multicast: multicast,
   multiset: multiset,
   observable: observable,
   once: once,
   promisify: promisify,
+  readonly: readonly,
   reduce: reduce,
   repeat: repeat,
   spread: spread,
