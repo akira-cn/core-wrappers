@@ -50,7 +50,7 @@ function myWrapperWithoutArguments(fn){
 	}
 }
 
-function myWrapperWithArguments(..args){
+function myWrapperWithArguments(...args){
 	var fn = args[args.length - 1];
 	return function(){
 		//do sth...
