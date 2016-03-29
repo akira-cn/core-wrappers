@@ -370,14 +370,21 @@ describe('Core Wrappers', function(){
 
       class Foo{
         x = 1;
+        y = 0;
         @methodize
         bar(self, y){
+          self.y = y;
           return self.x + y;
+        }
+        @methodize('x','y')
+        bar2(x, y, z){
+          return x + y + z;
         }
       }
 
       var foo = new Foo();
       expect(foo.bar(2)).to.equal(3);
+      expect(foo.bar2(3)).to.equal(6);
     });
 
     it('multicast', function(){

@@ -146,10 +146,23 @@ function enumerable(target, key, isEnumerable, fn){
   return target[key];
 }
 
-function methodize(fn){
-  return function(){
-    var args = slice.call(arguments);
-    return fn.apply(null, [this].concat(args));
+function methodize(){
+  var fn = arguments[arguments.length - 1];
+
+  if(arguments.length <= 1){
+    return function(){
+      var args = slice.call(arguments);
+      return fn.apply(null, [this].concat(args));
+    }
+  }else{
+    var targets = slice.call(arguments, 0, -1);
+    return function(){
+      var args = slice.call(arguments);
+      var context = this;
+      return fn.apply(null, targets.map(function(target){
+        return context[target];
+      }).concat(args));
+    }
   }
 }
 

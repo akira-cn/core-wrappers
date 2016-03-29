@@ -20,7 +20,7 @@ npm install core-wrappers
 **core-wrappers CDN**
 
 ```html
-<script src="https://s5.ssl.qhimg.com/!3009685d/core-wrappers.min.js"></script>
+<script src="https://s5.ssl.qhimg.com/!eda20dea/core-wrappers.min.js"></script>
 ```
 
 You can use it with any AMD loader or **standalone**
@@ -446,9 +446,9 @@ expect(Object.keys(foo).indexOf('bar')).to.equal(-1);
 
 ### @methodize
 
-**methodize(fn)**
+**methodize([...keys,] fn)**
 
-Add the `this context` to the first argument of the function.
+Invoke this wrapper without keys will add `this` context to the first argument of the function.
 
 ```js
 const w = require('core-wrappers');
@@ -466,6 +466,26 @@ class Foo{
 var foo = new Foo();
 expect(foo.bar(2)).to.equal(3);
 ```
+
+Invoke this wrapper with keys will add `this[key1], thie[key2]...` to the arguments of the function.
+
+```js
+const w = require('core-wrappers');
+
+const methodize = w.getDecorator('methodize');
+
+class Foo{
+  x = 1;
+  y = 2;
+  @methodize('x','y')
+  bar(x, y, z){
+    return x + y + z;
+  }
+}
+
+var foo = new Foo();
+expect(foo.bar(3)).to.equal(6);
+``` 
 
 ### @multicast
 
