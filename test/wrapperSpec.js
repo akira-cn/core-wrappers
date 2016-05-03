@@ -289,6 +289,8 @@ describe('Core Wrappers', function(){
       }
       var foo = new Foo();
       var bar = foo.bar;
+      var bar1 = foo.bar;
+      expect(bar).to.equal(bar1);
       expect(bar()).to.equal(1);
     });
 

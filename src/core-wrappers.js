@@ -408,7 +408,7 @@ var decoratorWrapper = {
     }
 
     descriptor.get = function(){
-      return bind(this, fn);
+      return this.__boundFn__ || (this.__boundFn__ = bind(this, fn));
     }
 
     return descriptor;
