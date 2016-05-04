@@ -408,7 +408,8 @@ var decoratorWrapper = {
     }
 
     descriptor.get = function(){
-      return this.__boundFn__ || (this.__boundFn__ = bind(this, fn));
+      // use fn reference as identifier which can ensure every function uniquely after wrapped
+      return this[fn] || (this[fn] = bind(this, fn));
     }
 
     return descriptor;
