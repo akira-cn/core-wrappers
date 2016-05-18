@@ -397,8 +397,7 @@ function toDecorator(wrapper){
 
 var decoratorWrapper = {
   bind: function(fn){
-    var target = this.target, key = this.key,
-        descriptor = this.descriptor,
+    var descriptor = this.descriptor,
         // use function name(or fn string if not support Function.name) as identifier which can ensure every function uniquely after wrapped
         fnName = '__' + (fn.name || fn) + 'Fn';
 
@@ -406,7 +405,7 @@ var decoratorWrapper = {
     delete descriptor.writable;
 
     descriptor.set = function(value){
-      target[key] = value;
+      this[fnName] = value;
     }
 
     descriptor.get = function(){
