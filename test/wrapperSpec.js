@@ -292,6 +292,13 @@ describe('Core Wrappers', function(){
       var bar1 = foo.bar;
       expect(bar).to.equal(bar1);
       expect(bar()).to.equal(1);
+      
+      var originalBar = foo.bar;
+      foo.bar = function () {
+        return originalBar();
+      };
+      var bar2 = foo.bar;
+      expect(bar2()).to.equal(1);
     });
 
     it('debounce', function(done){
