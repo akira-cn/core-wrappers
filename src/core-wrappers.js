@@ -398,8 +398,9 @@ function toDecorator(wrapper){
 var decoratorWrapper = {
   bind: function(fn){
     var descriptor = this.descriptor,
-        // use function name(or fn string if not support Function.name) as identifier which can ensure every function uniquely after wrapped
-        fnName = '__' + (fn.name || fn) + 'Fn';
+        // use function string as identifier which can ensure every function uniquely after wrapped
+        // we can not use Function.name as identifier because its name may be empty(anonymous function) or defined by other ways(such as Object.defineProperty)
+        fnName = '__' + fn + 'Fn__';
 
     delete descriptor.value;
     delete descriptor.writable;
