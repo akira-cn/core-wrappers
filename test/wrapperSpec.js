@@ -299,6 +299,35 @@ describe('Core Wrappers', function(){
       };
       var bar2 = foo.bar;
       expect(bar2()).to.equal(1);
+      
+      // test non-decorator used
+      class Klass {}
+      const descriptors = [
+        {
+          key: 'fn1',
+          value: function() {
+            return 1;
+          }
+        },
+        {
+          key: 'fn2',
+          value: function() {
+            return 2;
+          }
+        }
+      ];
+
+      descriptors.forEach(descriptor => {
+        const target = Klass.prototype;
+        const name = descriptor.key;
+        Object.defineProperty(target, name, bind(target, name, descriptor));
+      });
+
+      const instance = new Klass();
+
+      expect(instance.fn1).not.equal(instance.fn2);
+      expect(instance.fn1()).to.equal(1);
+      expect(instance.fn2()).to.equal(2);
     });
 
     it('debounce', function(done){
