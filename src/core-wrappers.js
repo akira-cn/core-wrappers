@@ -187,6 +187,8 @@ function multiset(fn){
       for(var i in key){
         fn.call(this, i, key[i]);
       }
+    }else{
+      return fn.call(this, key, value);
     }
   }
 }
@@ -256,10 +258,10 @@ function reduce(fn){
 function repeat(times, wait, fn){
   if(typeof wait === 'function'){
     fn = wait;
-    wait = 0;
+    wait = undefined;
   }
 
-  if(!wait){
+  if(wait == null){
     return function(){
       var ret = [];
       for(var i = 0; i < times; i++){
@@ -274,7 +276,7 @@ function repeat(times, wait, fn){
 
       setTimeout(function next(){
         fn.apply(context, args);
-        if(i++ < times){
+        if(++i < times){
           next();
         }
       }, wait);

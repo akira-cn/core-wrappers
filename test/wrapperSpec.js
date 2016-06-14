@@ -79,6 +79,16 @@ describe('Core Wrappers', function(){
       });      
     });
 
+    it('deprecate', function(){
+      function foo(){
+        return 'bar';
+      }
+      foo = w.deprecate(foo);
+      foo();
+      var foo2 = w.deprecate('foo has been deprecated.', foo);
+      foo2();
+    });
+
     it('methodize', function(){
       var foo = {
         x : 1,
@@ -126,6 +136,20 @@ describe('Core Wrappers', function(){
       inc = w.repeat(5, inc);
       inc();
       expect(i).to.equal(5);
+    });
+
+    it('repeat-wait', function(done){
+      var i = 0;
+      function inc(){
+        i++;
+      }
+      inc = w.repeat(5, 1, inc);
+      inc();
+      expect(i).to.equal(0);
+      setTimeout(function(){
+        expect(i).to.equal(5);
+        done();
+      }, 100);
     });
 
     it('reduce', function(){
@@ -193,6 +217,12 @@ describe('Core Wrappers', function(){
       }
 
       expect(add(1,2)).to.equal(7);
+
+      add.after = function(ret){
+        return -ret;
+      }
+
+      expect(add(1,2)).to.equal(-7);
     });
 
     it('promisify', function(done){
@@ -440,14 +470,26 @@ describe('Core Wrappers', function(){
           this.items.push(item);
           return this.items.slice(-1)[0];
         }
+
+        @multicast
+        add(item){
+          this.items.push(item);
+          return item;
+        }
       }
 
       var c = new Collection();
       c.append(1,2,3);
       expect(c.items[1]).to.equal(2); //2
+      c.append(4);
+      expect(c.items[3]).to.equal(4);
+      c.add(5);
+      expect(c.items[4]).to.equal(5);
+      c.add([6, 7]);
+      expect(c.items[6]).to.equal(7);
     });
 
-    if('multiset', function(){
+    it('multiset', function(){
       let multiset = w.getDecorator('multiset');
 
       class Store{
@@ -463,10 +505,11 @@ describe('Core Wrappers', function(){
       let store = new Store();
       store.setItem('a', 1);
       store.setItem({b:2, c:3});
+      let map = store.map;
 
-      expect(store.a).to.equal(1);
-      expect(store.b).to.equal(2);
-      expect(store.c).to.equal(3);
+      expect(map.a).to.equal(1);
+      expect(map.b).to.equal(2);
+      expect(map.c).to.equal(3);
     });
 
     it('enumerable', function(){
